@@ -3,7 +3,7 @@
     <!-- Loading State -->
     <div v-if="loading">Loading categories...</div>
 
-    <!-- Category Dropdown (Only shows after data is loaded) -->
+    <!-- Category Dropdown -->
     <select v-else v-model="selected" @change="emitFilters">
       <option value="">All Categories</option>
       <option
@@ -63,7 +63,6 @@ const GET_CATEGORIES = gql`
 // Fetch categories
 const { result, loading: queryLoading } = useQuery(GET_CATEGORIES);
 
-// Watch for changes and update categories
 watch(
   () => result.value,
   (newResult) => {
@@ -72,10 +71,9 @@ watch(
       loading.value = false;
     }
   },
-  { immediate: true } // Trigger immediately on mount
+  { immediate: true }
 );
 
-// Watch for prop changes and sync
 watch(
   () => [props.minPrice, props.maxPrice, props.selectedCategory],
   ([newMin, newMax, newCat]) => {
@@ -85,7 +83,6 @@ watch(
   }
 );
 
-// Emit updated filters
 const emitFilters = () => {
   emit('filtersUpdated', {
     minPrice: localMinPrice.value,

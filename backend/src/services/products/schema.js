@@ -1,4 +1,3 @@
-// src/services/products/schema.js
 const { gql } = require("graphql-tag");
 
 const typeDefs = gql`

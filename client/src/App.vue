@@ -29,9 +29,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
-import { gql } from "@apollo/client/core";
 import { useAuthStore } from "./stores/auth";
-
 import debounce from "./utils/debounce";
 
 // Components
@@ -39,48 +37,17 @@ import SearchBar from "./components/SearchBar.vue";
 import Filters from "./components/Filters.vue";
 import ProductCard from "./components/ProductCard.vue";
 
+// GraphQL Queries and Mutations
+import { GET_PRODUCTS, GET_CATEGORIES } from "./graphql/queries";
+import { UPDATE_PRODUCT_NAME } from "./graphql/mutations";
+
 // Role and Data
-const authStore = useAuthStore();
-const role = authStore.role;
+const { role } = useAuthStore();
 const search = ref("");
 const minPrice = ref("");
 const maxPrice = ref("");
 const selectedCategory = ref("");
 const categories = ref([]);
-
-// GraphQL Queries and Mutations
-const GET_PRODUCTS = gql`
-  query getProducts(
-    $search: String
-    $minPrice: Float
-    $maxPrice: Float
-    $categoryId: ID
-  ) {
-    products(
-      search: $search
-      minPrice: $minPrice
-      maxPrice: $maxPrice
-      categoryId: $categoryId
-    ) {
-      id
-      name
-      price
-      category {
-        id
-        name
-      }
-    }
-  }
-`;
-
-const GET_CATEGORIES = gql`
-  query getCategories {
-    categories {
-      id
-      name
-    }
-  }
-`;
 
 // Product Query
 const { result: productResult, refetch: refetchProducts } = useQuery(
@@ -96,24 +63,13 @@ const { result: productResult, refetch: refetchProducts } = useQuery(
 // Category Query
 const { result: categoryResult } = useQuery(GET_CATEGORIES);
 
-// Watch for category result and set it to categories list
 computed(() => {
   if (categoryResult.value) {
     categories.value = categoryResult.value.categories;
   }
-  console.log("categoryResult.value :>> ", categoryResult.value);
-  console.log("categories.value :>> ", categories.value);
 });
 
 // Mutation for updating the product name
-const UPDATE_PRODUCT_NAME = gql`
-  mutation updateProductName($id: ID!, $name: String!) {
-    updateProductName(id: $id, name: $name) {
-      id
-      name
-    }
-  }
-`;
 const { mutate } = useMutation(UPDATE_PRODUCT_NAME);
 
 // Debounced search
@@ -134,10 +90,6 @@ const onFiltersUpdated = ({
   maxPrice.value = max;
   selectedCategory.value = category;
   refetchProducts();
-};
-
-const editProduct = (productId) => {
-  console.log("Editing product:", productId);
 };
 
 const updateProduct = (product) => {

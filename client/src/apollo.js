@@ -5,16 +5,16 @@ import {
 } from "@apollo/client/core";
 import { provideApolloClient } from "@vue/apollo-composable";
 import { setContext } from "@apollo/client/link/context";
-import { useAuthStore } from "./stores/auth"; // Import the Pinia store
+import { useAuthStore } from "./stores/auth";
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000/", // Your GraphQL server URL
+  uri: "http://localhost:4000/",
 });
 
 // Add Authorization Header
 const authLink = setContext((_, { headers }) => {
-  const authStore = useAuthStore(); // Access the Pinia store
-  const token = authStore.role; // Get the token from the store
+  const authStore = useAuthStore(); 
+  const token = authStore.role; 
 
   return {
     headers: {
@@ -24,13 +24,12 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-// Apollo Client Setup
+// Apollo Client
 const apolloClient = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
 
-// Provide the Apollo Client globally
 provideApolloClient(apolloClient);
 
 export { apolloClient };

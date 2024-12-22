@@ -5,7 +5,7 @@
         <p class="font-bold">{{ product.name }}</p>
         <p class="text-gray-500">Price: ${{ product.price }}</p>
       </div>
-      <!-- Edit Button (only for admin) -->
+      <!-- Edit Button -->
       <button
         v-if="isAdmin"
         @click="startEditing"

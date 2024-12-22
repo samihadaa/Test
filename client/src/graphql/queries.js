@@ -1,8 +1,19 @@
-import gql from 'graphql-tag';
+// queries.js
+import { gql } from "@apollo/client/core";
 
 export const GET_PRODUCTS = gql`
-  query GetProducts($search: String, $category: String, $minPrice: Float, $maxPrice: Float) {
-    products(search: $search, category: $category, minPrice: $minPrice, maxPrice: $maxPrice) {
+  query getProducts(
+    $search: String
+    $minPrice: Float
+    $maxPrice: Float
+    $categoryId: ID
+  ) {
+    products(
+      search: $search
+      minPrice: $minPrice
+      maxPrice: $maxPrice
+      categoryId: $categoryId
+    ) {
       id
       name
       price
@@ -15,7 +26,7 @@ export const GET_PRODUCTS = gql`
 `;
 
 export const GET_CATEGORIES = gql`
-  query GetCategories {
+  query getCategories {
     categories {
       id
       name

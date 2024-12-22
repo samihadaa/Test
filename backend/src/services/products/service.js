@@ -1,8 +1,6 @@
-// src/server.js
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
 const { buildSubgraphSchema } = require("@apollo/subgraph");
-const { authMiddleware } = require("../../utils/auth");
 const typeDefs = require("./schema");
 const resolvers = require("./resolvers");
 
@@ -10,7 +8,9 @@ const resolvers = require("./resolvers");
 async function startServer() {
   const server = new ApolloServer({
     schema: buildSubgraphSchema({ typeDefs, resolvers }),
-    context: ({ req }) => authMiddleware(req),
+    context: ({ req }) => {
+      return req.context;
+    },
   });
 
   const { url } = await startStandaloneServer(server, {
