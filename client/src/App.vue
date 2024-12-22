@@ -30,6 +30,8 @@
 import { ref, computed } from "vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
+import { useAuthStore } from "./stores/auth";
+
 import debounce from "./utils/debounce";
 
 // Components
@@ -38,12 +40,13 @@ import Filters from "./components/Filters.vue";
 import ProductCard from "./components/ProductCard.vue";
 
 // Role and Data
-const role = "admin"; // Simulated role. Replace with actual logic.
+const authStore = useAuthStore();
+const role = authStore.role;
 const search = ref("");
 const minPrice = ref("");
 const maxPrice = ref("");
 const selectedCategory = ref("");
-const categories = ref([]); // Categories list
+const categories = ref([]);
 
 // GraphQL Queries and Mutations
 const GET_PRODUCTS = gql`

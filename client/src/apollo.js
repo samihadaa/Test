@@ -1,10 +1,32 @@
-// src/apollo.js
-import { ApolloClient, InMemoryCache } from '@apollo/client/core';
-import { provideApolloClient } from '@vue/apollo-composable';
+import {
+  ApolloClient,
+  InMemoryCache,
+  createHttpLink,
+} from "@apollo/client/core";
+import { provideApolloClient } from "@vue/apollo-composable";
+import { setContext } from "@apollo/client/link/context";
+import { useAuthStore } from "./stores/auth"; // Import the Pinia store
+
+const httpLink = createHttpLink({
+  uri: "http://localhost:4000/", // Your GraphQL server URL
+});
+
+// Add Authorization Header
+const authLink = setContext((_, { headers }) => {
+  const authStore = useAuthStore(); // Access the Pinia store
+  const token = authStore.role; // Get the token from the store
+
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  };
+});
 
 // Apollo Client Setup
 const apolloClient = new ApolloClient({
-  uri: 'http://localhost:4000/graphql', // Replace with your GraphQL endpoint
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
 

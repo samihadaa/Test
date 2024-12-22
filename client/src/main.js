@@ -5,7 +5,18 @@ import '../src/assets/style.css';
 import { provideApolloClient } from '@vue/apollo-composable';
 import { apolloClient } from './apollo.js';
 
+// Import Pinia
+import { createPinia } from 'pinia';
+
+// Create a new Vue app
+const app = createApp(App);
+
+// Create and use Pinia
+const pinia = createPinia();
+app.use(pinia);
+
 // Provide Apollo Client globally
 provideApolloClient(apolloClient);
 
-createApp(App).mount('#app');
+// Mount the app
+app.mount('#app');
