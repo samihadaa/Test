@@ -19,7 +19,6 @@
         :key="product.id"
         :product="product"
         :isAdmin="role === 'admin'"
-        @editProduct="editProduct"
         @updateProduct="updateProduct"
       />
     </div>
