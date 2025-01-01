@@ -8,13 +8,17 @@ const resolvers = require("./resolvers");
 async function startServer() {
   const server = new ApolloServer({
     schema: buildSubgraphSchema({ typeDefs, resolvers }),
-    context: ({ req }) => {
-      return req.context;
-    },
   });
 
   const { url } = await startStandaloneServer(server, {
     listen: { port: 4001 },
+    context: async ({ req }) => {
+      const token = req.headers.authorization || "";
+      console.log("Authorization header at subgraph:", token);  // Log token at subgraph
+      return {
+        user: token === "Bearer admin" ? { role: "admin" } : { role: "user" },
+      };
+    },
   });
 
   console.log(`Products Service running at ${url}`);
